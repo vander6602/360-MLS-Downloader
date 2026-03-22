@@ -206,7 +206,7 @@ No authentication required — MLS tour data and images are publicly accessible 
 
 **Author:** PRHack | CyberSpartan77 ([@fjimenez77](https://github.com/fjimenez77))
 
-API reverse-engineering powered by [AuthScope](https://authscope.com/) Chrome Extension and manual network analysis.
+API reverse-engineering powered by [AuthScope](https://github.com/fjimenez77/AuthScope) Chrome Extension and manual network analysis.
 
 ---
 
