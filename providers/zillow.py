@@ -220,13 +220,25 @@ def _extract_page_data(html):
     if type_match:
         data["home_type"] = type_match.group(1)
 
-    # Description
-    desc_match = re.search(r'"description"\s*:\s*"((?:[^"\\]|\\.)*)"', h)
-    if desc_match:
+    # Description — find the listing-specific description (not meta/search page blurb)
+    # The real description is typically longer and near other listing fields
+    desc_candidates = re.findall(r'"description"\s*:\s*"((?:[^"\\]|\\.){50,})"', h)
+    best_desc = None
+    for candidate in desc_candidates:
+        # Skip generic Zillow search blurbs
+        if "has" in candidate and "homes for sale" in candidate:
+            continue
+        if "View listing photos" in candidate:
+            continue
+        if "detailed real estate filters" in candidate:
+            continue
+        best_desc = candidate
+        break
+    if best_desc:
         try:
-            data["description"] = desc_match.group(1).encode().decode('unicode_escape')
+            data["description"] = best_desc.encode().decode('unicode_escape')
         except Exception:
-            data["description"] = desc_match.group(1)
+            data["description"] = best_desc
 
     # Address components
     for field in ("streetAddress", "city", "state", "zipcode"):
@@ -272,7 +284,9 @@ def _extract_page_data(html):
         if m:
             try:
                 val = json.loads(m.group(1))
-                if val and val != ["None"]:
+                # Filter out "None", "N/A", null values
+                val = [x for x in val if x and x not in ("None", "N/A", "null", None)]
+                if val:
                     data[data_key] = val
             except (json.JSONDecodeError, TypeError):
                 pass
@@ -584,7 +598,7 @@ def _extract_dom_facts(html, data):
     if "community_features" not in data:
         m = re.search(r'Community\s*\n+\s*(?:•\s*)?Features:\s*([^\n]+)', text)
         if m:
-            data["community_features"] = [x.strip() for x in m.group(1).split(',')]
+            data["community_features"] = [x.strip() for x in m.group(1).split(',') if x.strip() not in ('None', 'N/A')]
 
     # ── Subdivision ──
     if "subdivision" not in data:
