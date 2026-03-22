@@ -17,9 +17,11 @@ Built by **PRHack | CyberSpartan77** ([@fjimenez77](https://github.com/fjimenez7
 - CLI mode with flags for scripting and automation
 - Downloads both original and AI-enhanced versions
 - Selective room downloads (pick specific rooms or ranges)
+- Generate a self-contained 360° HTML tour viewer for offline use
 - Exports direct S3 image URLs for use in other tools
 - Resume support — skips already-downloaded files
 - Saves full tour metadata as JSON
+- Includes usage instructions for uploading to Zillow, Realtor.com, and other platforms
 
 ## Requirements
 
@@ -52,6 +54,7 @@ This launches a full interactive menu where you can:
 4. Choose what to download
 5. View direct image URLs
 6. Estimate total download size before committing
+7. Build a 360° HTML viewer for offline use
 
 You can also pre-load a tour URL:
 
@@ -120,15 +123,16 @@ Downloaded files are organized like this:
 
 ```
 ~/Downloads/ricoh360-Tour-Name/
-  tour-data.json              # Full tour metadata
-  brand-logo.jpg              # Photographer's brand logo
-  tripod-cover.jpg            # Tripod cover overlay
+  HOW TO USE THESE IMAGES.txt   # Usage instructions for online platforms
+  tour-data.json                # Full tour metadata
+  brand-logo.jpg                # Photographer's brand logo
+  tripod-cover.jpg              # Tripod cover overlay
   rooms/
     01-Foyer/
-      original.jpg            # Original 360 panorama
-      preview.jpg             # Smaller preview version
-      enhanced.jpg            # AI-enhanced version
-      enhanced-preview.jpg    # Enhanced preview
+      original.jpg              # Original 360 panorama
+      preview.jpg               # Smaller preview version
+      enhanced.jpg              # AI-enhanced version
+      enhanced-preview.jpg      # Enhanced preview
     02-Kitchen/
       original.jpg
       ...
@@ -140,6 +144,41 @@ Downloaded files are organized like this:
 - Social media (Facebook 360 photos, YouTube 360)
 - VR headsets
 - Any panorama viewer
+
+### Step 4 (Optional): Build a 360° HTML Viewer
+
+Use menu option `7` to generate a self-contained HTML tour viewer from any downloaded tour:
+
+1. Select option `7` from the main menu
+2. Pick a downloaded tour folder
+3. The tool generates `tour-viewer.html` in that folder
+4. Launch it using the included scripts:
+   - **Mac:** Double-click `Open Tour Viewer.command`
+   - **Windows:** Double-click `Open Tour Viewer.bat`
+
+The viewer includes a sidebar with room thumbnails, previous/next navigation, keyboard controls (arrow keys), and works completely offline.
+
+---
+
+## Uploading to Real Estate Platforms
+
+The downloaded images are standard equirectangular JPEGs — most platforms auto-detect them as 360° photos:
+
+| Platform | How to Upload |
+|----------|---------------|
+| **Zillow (FSBO)** | Upload room images as regular photos — Zillow auto-detects 360° format |
+| **Realtor.com** | Upload through your listing dashboard |
+| **Redfin** | Upload through the listing photo manager |
+| **MLS** | Upload via your agent or FSBO MLS service |
+| **Facebook** | Upload as a "360 Photo" — auto-detected |
+| **Kuula / CloudPano** | Upload equirectangular JPEGs to create interactive tours |
+
+**Tips:**
+- Use `enhanced.jpg` versions when available (better lighting and color)
+- Upload rooms in order (01, 02, 03...) to keep the tour flow logical
+- Each image is 3-4 MB, within most platform upload limits
+
+A detailed instructions file (`HOW TO USE THESE IMAGES.txt`) is included in every download.
 
 ---
 
@@ -153,11 +192,12 @@ Downloaded files are organized like this:
 | **4. Download images** | Submenu: all, all + JSON metadata, enhanced-only, originals-only, selective, or JSON-only |
 | **5. View direct URLs** | Show/save all direct S3 image URLs |
 | **6. Estimate size** | Check total download size before downloading |
+| **7. Build 360° viewer** | Generate an offline HTML tour viewer from a downloaded tour |
 | **q. Quit** | Exit the application |
 
 ### Selective Downloads
 
-In the download menu, option `4` lets you pick specific rooms:
+In the download menu, option `5` lets you pick specific rooms:
 
 ```
 Enter room numbers: 1,3,5,10      # Individual rooms
@@ -186,6 +226,11 @@ Enter room numbers: all            # Everything
   ricoh360-menu.py              # Interactive menu interface
   ricoh360-downloader.py        # CLI interface
   ricoh360_downloader_core.py   # Shared core engine (all logic)
+  ricoh360_viewer.py            # 360° HTML viewer generator
+  vendor/
+    pannellum.min.js            # Pannellum 2.5.6 (MIT) — 360° viewer
+    pannellum.min.css
+  logo.svg
   README.md
   LICENSE
 ```
@@ -201,6 +246,7 @@ Ricoh360 MLS tours are built with Next.js and store 360 panoramic images in AWS 
 3. Calls the Next.js data endpoint to get full tour metadata (rooms, image keys, S3 bucket info)
 4. Constructs direct S3 URLs for each panoramic image
 5. Downloads images with retry logic and resume support
+6. Optionally generates a self-contained HTML 360° viewer using Pannellum
 
 No authentication required — MLS tour data and images are publicly accessible by design (they're meant to be shared with home buyers).
 
@@ -211,6 +257,8 @@ No authentication required — MLS tour data and images are publicly accessible 
 **Author:** PRHack | CyberSpartan77 ([@fjimenez77](https://github.com/fjimenez77))
 
 API reverse-engineering powered by [AuthScope](https://github.com/fjimenez77/AuthScope) Chrome Extension and manual network analysis.
+
+360° viewer powered by [Pannellum](https://pannellum.org/) (MIT License).
 
 ---
 
