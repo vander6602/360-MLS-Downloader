@@ -527,7 +527,7 @@ body {{
     <p>Then open: <strong>http://localhost:8360/tour-viewer.html</strong></p>
     <div class="or-text">— or —</div>
     <div class="launcher-hint">
-        <p>Double-click <strong>"Open Tour Viewer.command"</strong> in this folder — it does everything automatically.</p>
+        <p>Double-click <strong>"Open Tour Viewer.command"</strong> (Mac) or <strong>"Open Tour Viewer.bat"</strong> (Windows) in this folder — it does everything automatically.</p>
     </div>
 </div>
 
