@@ -2,7 +2,7 @@
 
 Download 360-degree panoramic images from Ricoh360 MLS virtual home tours. Supports both an interactive menu-driven interface and a scriptable CLI for automation.
 
-Built by **CyberSpartan** ([@fjimenez77](https://github.com/fjimenez77))
+Built by **PRHack | CyberSpartan77** ([@fjimenez77](https://github.com/fjimenez77))
 
 ---
 
@@ -204,7 +204,7 @@ No authentication required — MLS tour data and images are publicly accessible 
 
 ## Credits
 
-**Author:** CyberSpartan ([@fjimenez77](https://github.com/fjimenez77))
+**Author:** PRHack | CyberSpartan77 ([@fjimenez77](https://github.com/fjimenez77))
 
 API reverse-engineering powered by [AuthScope](https://authscope.com/) Chrome Extension and manual network analysis.
 
