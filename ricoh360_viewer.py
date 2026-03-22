@@ -176,6 +176,29 @@ python3 -m http.server $PORT
         f.write(launcher_script)
     os.chmod(launcher_path, 0o755)
 
+    # Generate launcher script for Windows
+    bat_path = tour_folder / "Open Tour Viewer.bat"
+    bat_script = f'''@echo off
+title 360 Tour Viewer - {tour_name}
+echo.
+echo   Starting 360 Tour Viewer...
+echo   Tour: {tour_name}
+echo.
+echo   Close this window to stop the server.
+echo.
+
+cd /d "%~dp0"
+set PORT=8360
+
+REM Open browser after a short delay
+start "" cmd /c "timeout /t 2 /nobreak >nul & start http://localhost:%PORT%/tour-viewer.html"
+
+REM Start server
+python -m http.server %PORT%
+'''
+    with open(bat_path, "w") as f:
+        f.write(bat_script)
+
     return str(output_path)
 
 
