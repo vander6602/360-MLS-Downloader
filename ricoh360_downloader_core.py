@@ -13,6 +13,8 @@ Examples:
     python ricoh360-downloader.py f948586f-1c5c-48dc-81fd-6ef9a09a12c0 --enhanced-only
 """
 
+__version__ = "1.0.0"
+
 import argparse
 import json
 import os

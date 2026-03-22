@@ -6,6 +6,8 @@
 
 <p align="center">Download 360-degree panoramic images from Ricoh360 MLS virtual home tours.<br>Supports both an interactive menu-driven interface and a scriptable CLI for automation.</p>
 
+<p align="center"><strong>v1.0.0</strong></p>
+
 Built by **PRHack | CyberSpartan77** ([@fjimenez77](https://github.com/fjimenez77))
 
 ---
