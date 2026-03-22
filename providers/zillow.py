@@ -387,7 +387,248 @@ def _extract_page_data(html):
 
     data["photo_urls"] = photo_urls
 
+    # ── DOM-based fact extraction (rendered text after "Show more" click) ──
+    # This catches data that isn't in the JSON blobs but IS in the rendered DOM
+    _extract_dom_facts(html, data)
+
     return data
+
+
+def _extract_dom_facts(html, data):
+    """Extract facts from rendered DOM text (visible after 'Show more' click).
+    Only fills in keys that are missing — doesn't overwrite JSON-sourced data."""
+
+    # Strip HTML tags to get plain text
+    text = re.sub(r'<[^>]+>', '\n', html)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+
+    # Helper: extract bullet values after a heading
+    def _extract_section_items(heading_pattern):
+        m = re.search(heading_pattern + r'(.*?)(?=\n\s*(?:[A-Z][a-z]+ ?(?:&amp;|&) |[A-Z][a-z]+\n|$))', text, re.DOTALL | re.IGNORECASE)
+        if not m:
+            return []
+        section = m.group(1) if m.lastindex else m.group(0)
+        items = []
+        for line in section.split('\n'):
+            line = line.strip().lstrip('•').lstrip('·').strip()
+            if line and len(line) > 2 and not line.startswith('Show'):
+                items.append(line)
+        return items
+
+    # Helper: extract "Key: Value" pairs from bullet items
+    def _parse_kv_items(items):
+        result = {}
+        for item in items:
+            if ':' in item:
+                k, v = item.split(':', 1)
+                result[k.strip()] = v.strip()
+            else:
+                result[item] = ""
+        return result
+
+    # ── Heating ──
+    if "heating" not in data:
+        m = re.search(r'Heating\s*\n+\s*(?:•\s*)?([^\n]+)', text)
+        if m:
+            val = m.group(1).strip().lstrip('•').strip()
+            if val and val not in ('None', 'N/A'):
+                data["heating"] = [x.strip() for x in val.split(',')]
+
+    # ── Cooling ──
+    if "cooling" not in data:
+        m = re.search(r'Cooling\s*\n+\s*(?:•\s*)?([^\n]+)', text)
+        if m:
+            val = m.group(1).strip().lstrip('•').strip()
+            if val and val not in ('None', 'N/A'):
+                data["cooling"] = [x.strip() for x in val.split(',')]
+
+    # ── Appliances ──
+    if "appliances" not in data:
+        m = re.search(r'Appliances\s*\n+\s*(?:•\s*)?Included:\s*([^\n]+)', text)
+        if m:
+            data["appliances"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Laundry ──
+    if "laundry_features" not in data:
+        m = re.search(r'(?:•\s*)?Laundry:\s*([^\n]+)', text)
+        if m:
+            data["laundry_features"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Flooring ──
+    if "flooring" not in data:
+        m = re.search(r'(?:•\s*)?Flooring:\s*([^\n]+)', text)
+        if m:
+            data["flooring"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Windows ──
+    if "window_features" not in data:
+        m = re.search(r'(?:•\s*)?Windows:\s*([^\n]+)', text)
+        if m:
+            data["window_features"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Interior features (the big list) ──
+    if "interior_features" not in data:
+        m = re.search(r'Features\s*\n+\s*(?:•\s*)?([A-Z][^\n]{20,})', text)
+        if m:
+            val = m.group(1).strip()
+            if 'Living Area' in val or 'Floorplan' in val or 'Kitchen' in val:
+                data["interior_features"] = [x.strip() for x in val.split(',')]
+
+    # ── Fireplace ──
+    if "fireplaces" not in data:
+        m = re.search(r'(?:•\s*)?Has fireplace:\s*(\w+)', text)
+        if m:
+            data["has_fireplace"] = m.group(1)
+        m2 = re.search(r'(?:•\s*)?Fireplace features:\s*([^\n]+)', text)
+        if m2:
+            data["fireplace_features"] = [x.strip() for x in m2.group(1).split(',')]
+
+    # ── Basement ──
+    m = re.search(r'(?:•\s*)?Has basement:\s*(\w+)', text)
+    if m:
+        data["has_basement"] = m.group(1)
+
+    # ── Exterior features ──
+    if "exterior_features" not in data:
+        m = re.search(r'(?:•\s*)?Exterior features:\s*([^\n]+)', text)
+        if m:
+            data["exterior_features"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Patio/Porch ──
+    if "patio_features" not in data:
+        m = re.search(r'(?:•\s*)?Patio\s*(?:&|&amp;)\s*porch:\s*([^\n]+)', text)
+        if m:
+            data["patio_features"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Fencing ──
+    if "fencing" not in data:
+        m = re.search(r'(?:•\s*)?Fencing:\s*([^\n]+)', text)
+        if m:
+            data["fencing"] = m.group(1).strip()
+
+    # ── Pool ──
+    if "pool_features" not in data:
+        m = re.search(r'(?:•\s*)?Pool features:\s*([^\n]+)', text)
+        if m:
+            val = m.group(1).strip()
+            if val != 'None':
+                data["pool_features"] = [x.strip() for x in val.split(',')]
+
+    # ── Levels/Stories ──
+    if "stories" not in data:
+        m = re.search(r'(?:•\s*)?Stories:\s*(\d+)', text)
+        if m:
+            data["stories"] = int(m.group(1))
+        m2 = re.search(r'(?:•\s*)?Levels:\s*([^\n]+)', text)
+        if m2:
+            data["levels"] = m2.group(1).strip()
+
+    # ── Construction materials ──
+    if "construction_materials" not in data:
+        # Look under Materials heading
+        m = re.search(r'Materials\s*\n+\s*(?:•\s*)?([^\n]+)', text)
+        if m:
+            val = m.group(1).strip()
+            if val and not val.startswith('Foundation'):
+                data["construction_materials"] = [x.strip() for x in val.split(',')]
+
+    # ── Foundation ──
+    if "foundation" not in data:
+        m = re.search(r'(?:•\s*)?Foundation:\s*([^\n]+)', text)
+        if m:
+            data["foundation"] = m.group(1).strip()
+
+    # ── Roof ──
+    if "roof_type" not in data:
+        m = re.search(r'(?:•\s*)?Roof:\s*([^\n]+)', text)
+        if m:
+            data["roof_type"] = m.group(1).strip()
+
+    # ── Architectural style ──
+    if "architectural_style" not in data:
+        m = re.search(r'(?:•\s*)?Architectural style:\s*([^\n]+)', text)
+        if m:
+            data["architectural_style"] = m.group(1).strip()
+
+    # ── Condition ──
+    if "property_condition" not in data:
+        m = re.search(r'Condition\s*\n+\s*(?:•\s*)?([^\n]+)', text)
+        if m:
+            data["property_condition"] = m.group(1).strip()
+
+    # ── Sewer ──
+    if "sewer" not in data:
+        m = re.search(r'(?:•\s*)?Sewer:\s*([^\n]+)', text)
+        if m:
+            data["sewer"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Water ──
+    if "water_source" not in data:
+        m = re.search(r'(?:•\s*)?Water:\s*([^\n]+)', text)
+        if m:
+            data["water_source"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Utilities ──
+    if "utilities" not in data:
+        m = re.search(r'(?:•\s*)?Utilities for property:\s*([^\n]+)', text)
+        if m:
+            data["utilities"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Security ──
+    if "security_features" not in data:
+        m = re.search(r'(?:•\s*)?Security:\s*([^\n]+)', text)
+        if m:
+            data["security_features"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Community features ──
+    if "community_features" not in data:
+        m = re.search(r'Community\s*\n+\s*(?:•\s*)?Features:\s*([^\n]+)', text)
+        if m:
+            data["community_features"] = [x.strip() for x in m.group(1).split(',')]
+
+    # ── Subdivision ──
+    if "subdivision" not in data:
+        m = re.search(r'(?:•\s*)?Subdivision:\s*([^\n]+)', text)
+        if m:
+            data["subdivision"] = m.group(1).strip()
+
+    # ── Region ──
+    if "region" not in data:
+        m = re.search(r'(?:•\s*)?Region:\s*([^\n]+)', text)
+        if m:
+            data["region"] = m.group(1).strip()
+
+    # ── Parcel number ──
+    if "parcel_number" not in data:
+        m = re.search(r'(?:•\s*)?Parcel number:\s*([^\n]+)', text)
+        if m:
+            data["parcel_number"] = m.group(1).strip()
+
+    # ── Rooms from DOM (if JSON rooms empty) ──
+    if "rooms_detail" not in data or not data["rooms_detail"]:
+        rooms = []
+        # Pattern: "Primary bedroom\nFeatures: ...\nArea: ...\nDimensions: ..."
+        room_patterns = re.finditer(
+            r'(Primary bedroom|Primary bathroom|Bedroom \d+|Bathroom \d+|Kitchen|Living room|'
+            r'Dining room|Family room|Office|Laundry|Garage|Game room|Bonus room|Utility room)\s*\n'
+            r'((?:\s*(?:•\s*)?(?:Features|Area|Dimensions|Level):[^\n]+\n?)*)',
+            text, re.IGNORECASE
+        )
+        for rm in room_patterns:
+            room_info = {"type": rm.group(1).strip()}
+            details = rm.group(2)
+            feat = re.search(r'Features:\s*([^\n]+)', details)
+            area = re.search(r'Area:\s*(\d+)', details)
+            dims = re.search(r'Dimensions:\s*([^\n]+)', details)
+            if feat:
+                room_info["features"] = feat.group(1).strip()
+            if area:
+                room_info["area"] = area.group(1).strip()
+            if dims:
+                room_info["dimensions"] = dims.group(1).strip()
+            rooms.append(room_info)
+        if rooms:
+            data["rooms_detail"] = rooms
 
 
 def _get_address(page_data):
@@ -456,13 +697,22 @@ def _get_listing_details(page_data):
         "patio": fmt_list(page_data.get("patio_features")),
         "exterior": fmt_list(page_data.get("exterior_features")),
         "pool": fmt_list(page_data.get("pool_features")),
-        "fencing": fmt_list(page_data.get("fencing")),
+        "fencing": page_data.get("fencing", "") if isinstance(page_data.get("fencing"), str) else fmt_list(page_data.get("fencing")),
+        # Interior features
+        "interior_features": fmt_list(page_data.get("interior_features")),
+        "has_basement": page_data.get("has_basement", ""),
+        "has_fireplace": page_data.get("has_fireplace", ""),
         # Construction
         "builder": page_data.get("builder_name", ""),
+        "foundation": page_data.get("foundation", ""),
+        "architectural_style": page_data.get("architectural_style", ""),
         # Utilities
         "electric": fmt_list(page_data.get("electric")),
         "water": fmt_list(page_data.get("water_source")),
         "sewer": fmt_list(page_data.get("sewer")),
+        "utilities": fmt_list(page_data.get("utilities")),
+        "levels": page_data.get("levels", ""),
+        "region": page_data.get("region", ""),
         # Community
         "security": fmt_list(page_data.get("security_features")),
         "community": fmt_list(page_data.get("community_features")),
@@ -563,16 +813,11 @@ def _fetch_page_interactive(url):
                 # Wait for resoFacts (detailed property data) OR vrModelGuid (3D tour)
                 has_facts = "resoFacts" in norm or "flooring" in norm or "heating" in norm
                 has_basic = "streetAddress" in norm or 'zillow_fb:beds' in content
-                if has_facts:
+                if has_facts or (has_basic and elapsed >= 12):
                     print("  Page loaded successfully!")
-                    html = content
-                    break
-                elif has_basic and elapsed >= 12:
-                    # Got basic data but no detailed facts after 12s — accept it
-                    # Give one more wait for JS to finish rendering facts
-                    page.wait_for_timeout(5000)
+                    # Click all "Show more" buttons to reveal full Facts & features
+                    _click_show_more(page)
                     html = page.content()
-                    print("  Page loaded (basic data captured).")
                     break
 
                 if elapsed % 15 == 0 and elapsed > 0:
@@ -599,3 +844,31 @@ def _fetch_page_interactive(url):
         raise ValueError("Failed to fetch Zillow listing page.")
 
     return html
+
+
+def _click_show_more(page):
+    """Click all 'Show more' buttons on the Zillow listing to expand Facts & features."""
+    try:
+        # Scroll to Facts & features section first
+        facts_heading = page.locator("text=Facts & features").first
+        if facts_heading.is_visible(timeout=3000):
+            facts_heading.scroll_into_view_if_needed()
+            page.wait_for_timeout(500)
+
+        # Click all "Show more" buttons
+        show_more_buttons = page.locator("button:has-text('Show more'), a:has-text('Show more')")
+        count = show_more_buttons.count()
+        for i in range(count):
+            try:
+                btn = show_more_buttons.nth(i)
+                if btn.is_visible(timeout=1000):
+                    btn.scroll_into_view_if_needed()
+                    btn.click(timeout=3000)
+                    page.wait_for_timeout(500)
+            except Exception:
+                pass
+
+        # Wait for content to render
+        page.wait_for_timeout(1000)
+    except Exception:
+        pass  # Non-critical — we still have the basic data

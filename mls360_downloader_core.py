@@ -334,8 +334,11 @@ def _write_listing_details(path, tour, details):
 
         # ── Interior ──
         section(f, "INTERIOR")
+        line(f, "Interior Features:", details.get('interior_features'))
         line(f, "Flooring:", details.get('flooring'))
         line(f, "Windows:", details.get('windows'))
+        line(f, "Has Basement:", details.get('has_basement'))
+        line(f, "Has Fireplace:", details.get('has_fireplace'))
         line(f, "Fireplaces:", details.get('fireplaces'))
         line(f, "Fireplace Type:", details.get('fireplace_features'))
         line(f, "Appliances:", details.get('appliances'))
@@ -346,10 +349,16 @@ def _write_listing_details(path, tour, details):
         line(f, "Heating:", details.get('heating'))
         line(f, "Cooling:", details.get('cooling'))
 
+        # ── Construction ──
+        section(f, "CONSTRUCTION")
+        line(f, "Materials:", details.get('construction_materials'))
+        line(f, "Foundation:", details.get('foundation'))
+        line(f, "Roof:", details.get('roof'))
+        line(f, "Arch. Style:", details.get('architectural_style'))
+
         # ── Exterior ──
         section(f, "EXTERIOR & PARKING")
-        line(f, "Construction:", details.get('construction_materials'))
-        line(f, "Roof:", details.get('roof'))
+        line(f, "Levels:", details.get('levels'))
         line(f, "Parking:", details.get('parking'))
         line(f, "Garage Spaces:", details.get('garage_spaces'))
         line(f, "Total Parking:", details.get('total_parking'))
@@ -363,10 +372,12 @@ def _write_listing_details(path, tour, details):
         line(f, "Electric:", details.get('electric'))
         line(f, "Water:", details.get('water'))
         line(f, "Sewer:", details.get('sewer'))
+        line(f, "Utilities:", details.get('utilities'))
 
         # ── Community ──
         section(f, "COMMUNITY & NEIGHBORHOOD")
         line(f, "Subdivision:", details.get('subdivision'))
+        line(f, "Region:", details.get('region'))
         line(f, "Security:", details.get('security'))
         line(f, "Community:", details.get('community'))
 
