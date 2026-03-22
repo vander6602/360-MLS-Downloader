@@ -82,11 +82,25 @@ Good contributions include:
 
 | File | Purpose |
 |------|---------|
-| `mls360_downloader_core.py` | Shared engine — all download logic lives here |
+| `mls360_downloader_core.py` | Shared engine — provider-agnostic download logic |
 | `mls360-downloader.py` | CLI interface (imports from core) |
 | `mls360-menu.py` | Interactive menu interface (imports from core) |
 | `mls360_viewer.py` | 360° HTML viewer generator |
+| `providers/__init__.py` | Provider registry and auto-detection |
+| `providers/zillow.py` | Zillow 3D Home + listing data provider |
+| `providers/ricoh360.py` | Ricoh360 MLS tour provider |
 | `vendor/` | Vendored Pannellum library (don't modify) |
+
+### Adding a New Provider
+
+To add support for a new platform, create `providers/your_provider.py` with:
+- `PROVIDER_NAME` and `DISPLAY_NAME` constants
+- `detect(url)` — return True if URL matches your platform
+- `extract_ids(url)` — extract IDs from URL
+- `fetch_tour_data(session, ids)` — fetch raw data from platform
+- `parse_tour(raw_data)` — normalize into the standard tour dict
+
+Then register it in `providers/__init__.py`.
 
 ---
 

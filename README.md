@@ -4,9 +4,9 @@
 
 <h1 align="center">360 MLS Downloader</h1>
 
-<p align="center">Download 360-degree panoramic images from MLS virtual home tours.<br>Supports both an interactive menu-driven interface and a scriptable CLI for automation.</p>
+<p align="center">Download 360-degree panoramic images and listing data from MLS virtual home tours.<br>Auto-detects platform from URL — just paste and go.</p>
 
-<p align="center"><strong>v2.0.0</strong> — Now supports Zillow 3D Home + Ricoh360 MLS</p>
+<p align="center"><strong>v2.0.0</strong></p>
 
 Built by **PRHack | CyberSpartan77** ([@fjimenez77](https://github.com/fjimenez77))
 
@@ -16,14 +16,17 @@ Built by **PRHack | CyberSpartan77** ([@fjimenez77](https://github.com/fjimenez7
 
 | Platform | What You Get |
 |----------|-------------|
-| **Zillow 3D Home** | 360° panoramas (4K + 8K), listing photos, property details, description |
-| **Ricoh360 MLS** | 360° panoramas (original + AI-enhanced), tour metadata |
+| **Zillow 3D Home** | 360° panoramas (4K JPEG + 8K AVIF), all listing photos, property details (price, beds, baths, sqft, lot, year built), full description |
+| **Zillow (no 3D)** | All listing photos, property details, description — works on any Zillow listing |
+| **Ricoh360 MLS** | 360° panoramas (original + AI-enhanced), tour metadata, photographer info |
 
 ## Features
 
 - Auto-detects platform from URL — just paste and go
 - Download all 360° equirectangular panoramas from MLS virtual tours
-- **Zillow:** Also downloads listing photos, property description, price, beds/baths/sqft
+- **Zillow:** Downloads listing photos, property description, price, beds/baths/sqft, year built, lot size, MLS #
+- **Zillow:** Works with or without a 3D tour — grabs everything available on the listing
+- **Zillow:** Opens a browser for CAPTCHA solving if needed (user solves, app continues automatically)
 - Interactive menu mode with tour analysis, room selection, and size estimation
 - CLI mode with flags for scripting and automation
 - Downloads both original and AI-enhanced/8K versions
@@ -32,6 +35,7 @@ Built by **PRHack | CyberSpartan77** ([@fjimenez77](https://github.com/fjimenez7
 - Resume support — skips already-downloaded files
 - Saves full tour metadata as JSON
 - Includes usage instructions for uploading to real estate platforms
+- Cross-platform: Mac and Windows support
 
 ## Requirements
 
@@ -47,6 +51,13 @@ cd 360-MLS-Downloader
 pip install requests
 ```
 
+For Zillow support, Playwright will auto-install on first use. Or install manually:
+
+```bash
+pip install playwright
+python3 -m playwright install chromium
+```
+
 ---
 
 ## Quick Start
@@ -59,8 +70,8 @@ python3 mls360-menu.py
 
 This launches a full interactive menu where you can:
 
-1. Paste any MLS tour URL
-2. View tour details (address, photographer, room count)
+1. Paste any tour URL (Zillow or Ricoh360 — auto-detected)
+2. View tour details (address, photographer, price, room count)
 3. Browse all rooms with enhancement status
 4. Choose what to download
 5. View direct image URLs
@@ -70,25 +81,29 @@ This launches a full interactive menu where you can:
 You can also pre-load a tour URL:
 
 ```bash
-python3 mls360-menu.py "https://mls.ricoh360.com/YOUR-TOUR-ID/ROOM-ID"
+python3 mls360-menu.py "https://www.zillow.com/homedetails/ADDRESS/ZPID_zpid/"
+python3 mls360-menu.py "https://mls.ricoh360.com/TOUR-ID/ROOM-ID"
 ```
 
 ### CLI Mode (Advanced)
 
 ```bash
-# Download everything from a tour
+# Download a Zillow listing (3D tour + photos + details)
+python3 mls360-downloader.py "https://www.zillow.com/homedetails/ADDRESS/ZPID_zpid/"
+
+# Download a Ricoh360 tour
 python3 mls360-downloader.py "https://mls.ricoh360.com/TOUR-ID/ROOM-ID"
 
-# Just the tour UUID works too
+# Just the tour UUID works too (Ricoh360)
 python3 mls360-downloader.py f948586f-1c5c-48dc-81fd-6ef9a09a12c0
 
 # Custom output directory
 python3 mls360-downloader.py TOUR-URL --output ~/Desktop/my-listing
 
-# Only AI-enhanced images
+# Only AI-enhanced/8K images
 python3 mls360-downloader.py TOUR-URL --enhanced-only
 
-# Only originals (skip enhanced)
+# Only originals/4K (skip enhanced)
 python3 mls360-downloader.py TOUR-URL --originals-only
 
 # Just grab metadata JSON, no images
@@ -99,57 +114,68 @@ python3 mls360-downloader.py TOUR-URL --json-only
 
 ## Usage Guide
 
-### Step 1: Get the Tour URL
+### Step 1: Get the URL
 
-Open any MLS virtual tour in your browser. The URL looks like:
+**For Zillow** — copy the listing URL from your browser:
+```
+https://www.zillow.com/homedetails/9123-Pitcairn-San-Antonio-TX-78254/26433581_zpid/
+```
 
+**For Ricoh360** — copy the tour URL:
 ```
 https://mls.ricoh360.com/f948586f-1c5c-48dc-81fd-6ef9a09a12c0/c84e8d06-2b82-46a0-991a-8814573e048b
 ```
 
-The first UUID is the **tour ID**, the second is the current **room ID**. You only need the tour ID — the tool extracts it automatically from the URL.
-
 ### Step 2: Run the Downloader
-
-**Option A — Interactive Menu:**
 
 ```bash
 python3 mls360-menu.py
 ```
 
-Then select option `1` and paste the URL. The tool will:
-- Fetch the tour data from the platform's API
-- Show you tour details, room list, and enhancement status
-- Let you choose what to download
+Select option `1`, paste the URL. The tool auto-detects the platform and:
+- Fetches tour/listing data
+- Shows details (address, rooms, price, photos)
+- Lets you choose what to download
 
-**Option B — CLI:**
-
-```bash
-python3 mls360-downloader.py "https://mls.ricoh360.com/TOUR-ID"
-```
+For Zillow: a browser window opens briefly to load the page. If a CAPTCHA appears, solve it — the app continues automatically once the page loads.
 
 ### Step 3: Use Your Images
 
-Downloaded files are organized like this:
+**Zillow download output:**
+
+```
+~/Downloads/mls360-Address/
+  HOW TO USE THESE IMAGES.txt   # Usage instructions
+  listing-details.txt           # Price, beds, baths, sqft, description
+  tour-data.json                # Full tour metadata
+  photos/                       # All listing photos
+    01-listing-photo-1.jpg
+    02-listing-photo-2.webp
+    ...
+  rooms/                        # 360° panoramas (if 3D tour exists)
+    01-Front-yard/
+      original.jpg              # 4K panorama (JPEG)
+      preview.jpg               # Thumbnail
+      enhanced.avif             # 8K panorama (AVIF, when available)
+    02-Entrance/
+      ...
+```
+
+**Ricoh360 download output:**
 
 ```
 ~/Downloads/mls360-Tour-Name/
-  HOW TO USE THESE IMAGES.txt   # Usage instructions for online platforms
+  HOW TO USE THESE IMAGES.txt   # Usage instructions
   tour-data.json                # Full tour metadata
-  tour-raw.json                 # Raw API response
   brand-logo.jpg                # Photographer's brand logo
   tripod-cover.jpg              # Tripod cover overlay
-  tour-viewer.html              # 360° viewer (generated via option 7)
-  Open Tour Viewer.command      # Mac launcher (generated via option 7)
-  Open Tour Viewer.bat          # Windows launcher (generated via option 7)
   rooms/
     01-Foyer/
       original.jpg              # Original 360 panorama
-      preview.jpg               # Smaller preview version
+      preview.jpg               # Smaller preview
       enhanced.jpg              # AI-enhanced version (if available)
-      enhanced-preview.jpg      # Enhanced preview (if available)
+      enhanced-preview.jpg      # Enhanced preview
     02-Kitchen/
-      original.jpg
       ...
 ```
 
@@ -189,9 +215,9 @@ The downloaded images are standard equirectangular JPEGs — most platforms auto
 | **Kuula / CloudPano** | Upload equirectangular JPEGs to create interactive tours |
 
 **Tips:**
-- Use `enhanced.jpg` versions when available (better lighting and color)
+- Use `enhanced` versions when available (better lighting and color)
 - Upload rooms in order (01, 02, 03...) to keep the tour flow logical
-- Each image is 3-4 MB, within most platform upload limits
+- Each image is typically under 2 MB, within most platform upload limits
 
 A detailed instructions file (`HOW TO USE THESE IMAGES.txt`) is included in every download.
 
@@ -201,11 +227,11 @@ A detailed instructions file (`HOW TO USE THESE IMAGES.txt`) is included in ever
 
 | Option | Description |
 |--------|-------------|
-| **1. Set target URL** | Enter a tour URL to analyze |
-| **2. View tour info** | Show address, photographer, room count, features |
+| **1. Set target URL** | Enter a tour URL (Zillow or Ricoh360 — auto-detected) |
+| **2. View tour info** | Show address, photographer, price, room count, listing details |
 | **3. View all rooms** | Table of all rooms with original/enhanced status |
-| **4. Download images** | Submenu: all, all + JSON metadata, enhanced-only, originals-only, selective, or JSON-only |
-| **5. View direct URLs** | Show/save all direct S3 image URLs |
+| **4. Download images** | Submenu: all, all + JSON, enhanced-only, originals-only, selective, JSON-only |
+| **5. View direct URLs** | Show/save all direct image URLs |
 | **6. Estimate size** | Check total download size before downloading |
 | **7. Build 360° viewer** | Generate an offline HTML tour viewer from a downloaded tour |
 | **q. Quit** | Exit the application |
@@ -227,10 +253,11 @@ Enter room numbers: all            # Everything
 
 | Flag | Description |
 |------|-------------|
-| `--output`, `-o` | Set custom output directory (default: `~/Downloads/mls360-<tour-name>`) |
-| `--enhanced-only` | Only download AI-enhanced images |
-| `--originals-only` | Only download original images |
+| `--output`, `-o` | Set custom output directory (default: `~/Downloads/mls360-<name>`) |
+| `--enhanced-only` | Only download enhanced/8K images |
+| `--originals-only` | Only download original/4K images |
 | `--json-only` | Save tour metadata JSON without downloading images |
+| `--version` | Show version number |
 
 ---
 
@@ -244,7 +271,7 @@ Enter room numbers: all            # Everything
   mls360_viewer.py            # 360° HTML viewer generator
   providers/
     __init__.py               # Provider registry and auto-detection
-    zillow.py                 # Zillow 3D Home provider
+    zillow.py                 # Zillow 3D Home + listing provider
     ricoh360.py               # Ricoh360 MLS provider
   vendor/
     pannellum.min.js          # Pannellum 2.5.6 (MIT) — 360° viewer
@@ -259,16 +286,21 @@ Enter room numbers: all            # Everything
 
 ## How It Works
 
-MLS virtual tours are built with Next.js and store 360 panoramic images in AWS S3. The tool:
+The tool uses a multi-provider architecture to support different platforms:
 
+**Zillow:**
+1. Opens a browser to load the listing page (bypasses bot protection)
+2. Extracts property details, photo URLs, and 3D tour IDs from the page
+3. Fetches the IMX manifest from Zillow's CDN (public, no auth)
+4. Downloads 4K/8K panoramas, listing photos, and saves property details
+
+**Ricoh360:**
 1. Extracts the tour UUID from the URL
 2. Fetches the Next.js build ID from the main page
-3. Calls the Next.js data endpoint to get full tour metadata (rooms, image keys, S3 bucket info)
-4. Constructs direct S3 URLs for each panoramic image
-5. Downloads images with retry logic and resume support
-6. Optionally generates a self-contained HTML 360° viewer using Pannellum
+3. Calls the Next.js data endpoint for full tour metadata
+4. Constructs direct S3 URLs and downloads all images
 
-No authentication required — MLS tour data and images are publicly accessible by design (they're meant to be shared with home buyers).
+Both providers output to the same folder structure, and the 360° HTML viewer works with either.
 
 ---
 
