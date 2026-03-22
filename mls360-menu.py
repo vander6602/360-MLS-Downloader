@@ -159,10 +159,16 @@ def _print_tour_summary(tour):
     print(f"  {clr('Tour:', C.BOLD)}          {tour['name']}")
     print(f"  {clr('Address:', C.BOLD)}       {tour['address']}")
     print(f"  {clr('Provider:', C.BOLD)}      {tour.get('provider', 'unknown')}")
+    if tour.get('photographer'):
+        print(f"  {clr('Photographer:', C.BOLD)}  {tour['photographer']}")
     print(f"  {clr('Rooms:', C.BOLD)}         {len(tour['rooms'])}")
     enhanced = sum(1 for r in tour['rooms'] if r.get('enhanced'))
     if enhanced:
         print(f"  {clr('Enhanced:', C.BOLD)}      {enhanced}/{len(tour['rooms'])}")
+    if tour.get('walkthrough_enabled'):
+        print(f"  {clr('Walkthrough:', C.BOLD)}   Yes")
+    if tour.get('brand_logo') and tour['brand_logo'].get('url'):
+        print(f"  {clr('Brand URL:', C.BOLD)}     {tour['brand_logo']['url']}")
     if tour.get('listing_photos'):
         print(f"  {clr('Photos:', C.BOLD)}        {len(tour['listing_photos'])} listing photos")
     if tour.get('listing_details'):
