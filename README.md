@@ -125,14 +125,18 @@ Downloaded files are organized like this:
 ~/Downloads/ricoh360-Tour-Name/
   HOW TO USE THESE IMAGES.txt   # Usage instructions for online platforms
   tour-data.json                # Full tour metadata
+  tour-raw.json                 # Raw API response
   brand-logo.jpg                # Photographer's brand logo
   tripod-cover.jpg              # Tripod cover overlay
+  tour-viewer.html              # 360° viewer (generated via option 7)
+  Open Tour Viewer.command      # Mac launcher (generated via option 7)
+  Open Tour Viewer.bat          # Windows launcher (generated via option 7)
   rooms/
     01-Foyer/
       original.jpg              # Original 360 panorama
       preview.jpg               # Smaller preview version
-      enhanced.jpg              # AI-enhanced version
-      enhanced-preview.jpg      # Enhanced preview
+      enhanced.jpg              # AI-enhanced version (if available)
+      enhanced-preview.jpg      # Enhanced preview (if available)
     02-Kitchen/
       original.jpg
       ...
